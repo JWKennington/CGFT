@@ -11,15 +11,18 @@
 int main() {
     double beta, dbeta, action, beta_max, beta_min;
     srand48(1234L);  /* initialize random number generator */
-    /* do your experiment here; this example is a thermal cycle */
+
+    /* Set Beta boundaries */
     beta_min = 0.0;
     beta_max = 1.0;
-    dbeta = .01;
-    int num_iters = (int) (2 * (beta_max - beta_min) / dbeta + 1);
+    dbeta = .001;
+
+    /* Initialize variables related to data */
+    int num_iters = (int) (2 * (beta_max - beta_min) / dbeta);
     double data_beta[num_iters];
     double data_action[num_iters];
-    memset( data_beta, 0, num_iters*sizeof(int) );
-    memset( data_action, 0, num_iters*sizeof(int) );
+    memset( data_beta, -1, num_iters*sizeof(int) );
+    memset( data_action, -1, num_iters*sizeof(int) );
     coldstart();
 
     /* heat it up */
@@ -47,7 +50,7 @@ int main() {
 
     /* Write data out to csv file */
     FILE *fptr;
-    fptr = fopen("data.csv", "w");
+    fptr = fopen("/Users/jim/repos/research/CGFT/data.csv", "w");
     if (fptr == NULL) {
         printf("Error!");
         exit(1);

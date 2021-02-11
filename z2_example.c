@@ -12,7 +12,7 @@
 #include <math.h>
 
 /* the lattice is of dimensions SIZE**4  */
-#define SIZE 6
+#define SIZE 10
 int link[SIZE][SIZE][SIZE][SIZE][4]; /* last index gives link direction */
 
 /* utility functions */

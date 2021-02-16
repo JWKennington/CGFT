@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# IntelliJ IDE Files
+*.idea
+
+# CMake Build Debug
+cmake-build-debug/*
+
+# Jupyter Notebook 
+*.ipynb_checkpoints

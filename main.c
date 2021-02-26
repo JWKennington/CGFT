@@ -3,12 +3,12 @@
 #include <memory.h>
 #include "z2_example.h"
 
-//int main() {
+//int thermal_cycle() {
 //    printf("Hello, World!\n");
 //    return 0;
 //}
 
-int main() {
+int thermal_cycle() {
     double beta, dbeta, action, beta_max, beta_min;
     srand48(1234L);  /* initialize random number generator */
 
@@ -21,8 +21,8 @@ int main() {
     int num_iters = (int) (2 * (beta_max - beta_min) / dbeta);
     double data_beta[num_iters];
     double data_action[num_iters];
-    memset( data_beta, -1, num_iters*sizeof(int) );
-    memset( data_action, -1, num_iters*sizeof(int) );
+    memset(data_beta, -1, num_iters * sizeof(int));
+    memset(data_action, -1, num_iters * sizeof(int));
     coldstart();
 
     /* heat it up */
@@ -34,7 +34,7 @@ int main() {
         // printf("%g\t%g\n", beta, action);
         data_beta[index] = beta;
         data_action[index] = action;
-        index ++;
+        index++;
     }
 
     /* cool it down */
@@ -45,7 +45,7 @@ int main() {
         // printf("%g\t%g\n", beta, action);
         data_beta[index] = beta;
         data_action[index] = action;
-        index ++;
+        index++;
     }
 
     /* Write data out to csv file */
@@ -62,4 +62,62 @@ int main() {
     }
     fclose(fptr);
     return 0;
+}
+
+
+int phase_transition() {
+    double beta, dbeta, action, beta_max, beta_min;
+    int repeat, iter;
+    srand48(1234L);  /* initialize random number generator */
+
+    /* Set Beta boundaries */
+    beta_min = 0.41;
+    beta_max = 0.44;
+    dbeta = .0001;
+    repeat = 100;
+
+    /* Initialize variables related to data */
+    int num_iters = (int) ((beta_max - beta_min) / dbeta);
+    double data_beta[num_iters];
+    double data_action[num_iters];
+    memset(data_beta, -1, num_iters * sizeof(int));
+    memset(data_action, -1, num_iters * sizeof(int));
+
+    int index = 0;
+    for (beta = beta_max; beta > beta_min; beta -= dbeta) {
+        /* start from same conditions */
+        coldstart();
+        action = 0;
+
+        /* Evolve repeatedly at same beta */
+        for (iter = 0; iter < repeat; iter += 1) {
+            action = update(beta);
+        }
+
+        /* Record data */
+        // printf("%g\t%g\n", beta, action);
+        data_beta[index] = beta;
+        data_action[index] = action;
+        index++;
+    }
+
+    /* Write data out to csv file */
+    FILE *fptr;
+    fptr = fopen("/Users/jim/repos/research/CGFT/phase_data_critical_close.csv", "w");
+    if (fptr == NULL) {
+        printf("Error!");
+        exit(1);
+    }
+
+    int n;
+    for (n = 0; n < index + 1; n++) {
+        fprintf(fptr, "%.6f,%.7f\n", data_beta[n], data_action[n]);
+    }
+    fclose(fptr);
+    return 0;
+}
+
+
+int main() {
+    phase_transition();
 }

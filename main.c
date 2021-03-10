@@ -74,7 +74,7 @@ int phase_transition() {
     beta_min = 0.41;
     beta_max = 0.44;
     dbeta = .0001;
-    repeat = 100;
+    repeat = 1000;
 
     /* Initialize variables related to data */
     int num_iters = (int) ((beta_max - beta_min) / dbeta);
@@ -103,7 +103,7 @@ int phase_transition() {
 
     /* Write data out to csv file */
     FILE *fptr;
-    fptr = fopen("/Users/jim/repos/research/CGFT/phase_data_critical_close.csv", "w");
+    fptr = fopen("/Users/jim/repos/research/CGFT/phase_data_critical_close_1000.csv", "w");
     if (fptr == NULL) {
         printf("Error!");
         exit(1);

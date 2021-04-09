@@ -67,16 +67,18 @@ int thermal_cycle() {
 
 
 int phase_transition() {
-    double beta, dbeta, action, beta_max, beta_min;
+    double beta, dbeta, action, beta_max, beta_min, beta_center, beta_width;
     int repeat, iter, beta_index, sample_freq, samples;
-    srand48(1234L);  /* initialize random number generator */
+    srand48(4963L);  /* initialize random number generator */
 
     /* Set Beta boundaries */
-    beta_min = 0.42;
-    beta_max = 0.44;
-    dbeta = .005;
-    repeat = 1000000;
-    sample_freq = 10;
+    beta_center = 0.438;
+    beta_width = 0.1;
+    beta_min = beta_center - beta_width;
+    beta_max = beta_center + beta_width;
+    dbeta = 0.001;
+    repeat = 3000000;
+    sample_freq = 3000000;
     samples = (int) repeat / sample_freq;
 
     /* Initialize variables related to data */
@@ -97,7 +99,8 @@ int phase_transition() {
             action = update(beta);
 
             /* Store value */
-            if (iter % sample_freq == 0) {  
+            if ((iter+1) % sample_freq == 0) {
+//                printf("Iter stored: %d \n", iter);
                 data_action[beta_index][(int) (iter / sample_freq)] = action;
             }
         }
@@ -110,7 +113,7 @@ int phase_transition() {
      *     Make sure to update the filename */
     printf("Writing Out Data\n");
     FILE *fptr;
-    fptr = fopen("/Users/jim/repos/research/CGFT/data/phase-transition/size_4_iter_1000_freq_10_beta_042_044.csv", "w");
+    fptr = fopen("/Users/jim/repos/research/CGFT/data/phase-transition/fvl_size_4_iter_3000000_freq_3000000_beta_0438_01_0001_ens_01.csv", "w");
     if (fptr == NULL) {
         printf("Error!");
         exit(1);

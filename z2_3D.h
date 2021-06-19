@@ -7,8 +7,8 @@
 
 #endif //CGFTTEST_Z2_EXAMPLE_H
 
-//int link;
-void moveup(int x[],int d);
-void movedown(int x[],int d);
-void coldstart();
-double update(double beta);
+//int link_3d;
+void moveup_3d(int x[],int d);
+void movedown_3d(int x[],int d);
+void coldstart_3d();
+double update_3d(double beta);

@@ -2,7 +2,7 @@
 // Created by Jim on 2/8/21.
 //
 
-#include "z2_example.h"
+#include "z2_4D.h"
 
 /* Z_2 lattice gauge simulation */
 /* Michael Creutz <creutz@bnl.gov>     */

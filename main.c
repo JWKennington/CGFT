@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <memory.h>
-#include "z2_example.h"
+#include "z2_4D.h"
+#include "z2_3D.h"
 
 //int thermal_cycle() {
 //    printf("Hello, World!\n");
@@ -130,13 +131,77 @@ int phase_transition() {
 }
 
 
+int phase_transition_3d() {
+    double beta, dbeta, action, beta_max, beta_min, beta_center, beta_width;
+    int repeat, iter, beta_index, sample_freq, samples;
+    srand48(5639L);  /* initialize random number generator */
+
+    /* Set Beta boundaries */
+    beta_center = 0.438;
+    beta_width = 0.01;
+    beta_min = beta_center - beta_width;
+    beta_max = beta_center + beta_width;
+    dbeta = 0.001;
+    repeat = 1000;
+    sample_freq = 1000;
+    samples = (int) repeat / sample_freq;
+
+    /* Initialize variables related to data */
+    int num_betas = (int) ((beta_max - beta_min) / dbeta) + 1;
+    double data_beta[num_betas];
+    double data_action[num_betas][samples];
+    memset(data_beta, -1, num_betas * sizeof(double));
+    memset(data_action, -1, num_betas * samples * sizeof(double));
+
+    for (beta_index = 0; beta_index < num_betas; beta_index ++) {
+        /* start from same conditions */
+        beta = beta_min + (beta_index * dbeta);
+        coldstart_3d();
+        action = 0;
+
+        /* Evolve repeatedly at same beta */
+        for (iter = 0; iter < repeat; iter += 1) {
+            action = update_3d(beta);
+
+            /* Store value */
+            if ((iter+1) % sample_freq == 0) {
+//                printf("Iter stored: %d \n", iter);
+                data_action[beta_index][(int) (iter / sample_freq)] = action;
+            }
+        }
+
+        /* Record data */
+        data_beta[beta_index] = beta;
+    }
+
+    /* Write data out to csv file
+     *     Make sure to update the filename */
+    printf("Writing Out Data\n");
+    FILE *fptr;
+    fptr = fopen("/Users/jim/repos/research/CGFT/data/phase-transition-3d/fvl_size_3_iter_1000_freq_1000_beta_0438_001_0001_ens_01.csv", "w");
+    if (fptr == NULL) {
+        printf("Error!");
+        exit(1);
+    }
+
+    int n, i;
+    for (n = 0; n < num_betas; n++) {
+        for (i = 0; i < samples; i++) {
+            fprintf(fptr, "%g,%d,%g\n", data_beta[n], i, data_action[n][i]);
+        }
+    }
+    fclose(fptr);
+    return 0;
+}
+
+
 int main() {
     /* Clock initial time */
     clock_t start, end;
     start = clock();
 
     /* Run Experiment */
-    phase_transition();
+    phase_transition_3d();
 
     /* Clock initial time */
     end = clock();
